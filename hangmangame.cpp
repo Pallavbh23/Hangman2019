@@ -12,7 +12,7 @@ class hangman{
 	hangman(string _word){
 		word = _word;
 		wordlength = _word.length();
-		correctletters = makeArray(10);
+		correctletters = makeArray(wordlength);
 		chances = 10;
 		hintstate = 0;
 		hint = "\0";
