@@ -5,6 +5,7 @@
 * Make it bugless before 15th.
 */
 #include <iostream>
+#include <conio.h>
 using namespace std;
 class hangman{
 	public:
@@ -155,5 +156,7 @@ int main(){
 	cin>>word;
 	hangman game(word);
 	game.startGame();
+	cout<<"press any key to exit.";
+	_getch();
 	return 0;
 }
