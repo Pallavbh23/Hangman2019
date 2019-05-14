@@ -1,4 +1,9 @@
 //Hangman code
+/*
+* I need to fix this code. getHint() needs to support multiword/ multiline comments.
+* printHint() would work well if hintstate is good. 
+* Make it bugless before 15th.
+*/
 #include <iostream>
 using namespace std;
 class hangman{
@@ -7,11 +12,10 @@ class hangman{
 	hangman(string _word){
 		word = _word;
 		wordlength = _word.length();
-		*correctletters = new bool[wordlength];
-		for(int i = 0; i < wordlength; i++)
-			correctletters[i] = 0;
+		correctletters = makeArray(10);
 		chances = 10;
 		hintstate = 0;
+		hint = "\0";
 		/*cout<<"Do you want to add a hint? (Type 'y' for yes.)"<<endl;
 		char confirmation;
 		cin>>confirmation;
@@ -22,16 +26,35 @@ class hangman{
 	private:
 	string word;
 	int wordlength;
-	bool correctletters[];
+	bool* correctletters;
 	int chances;
-	string hint = "\0";
+	string hint;
 	int hintstate;
 	void getHint();
 	bool hasWon();
+	bool* makeArray(int length);
 	void guess(string x);
 	void victory();
 	void printHint();
+	void printState();
 };
+bool* hangman::makeArray(int length){
+	bool* arr = new bool[length];
+	for(int i = 0; i < length; i++)
+		arr[i] = 0;
+	return arr;
+}
+void hangman::printState(){
+	cout<<"Current state of your characters is: "<<endl;
+	for(int i = 0; i < wordlength; i++)
+	{
+		if(correctletters[i] == 1)
+			cout<<word[i];
+		else
+			cout<<" _ ";
+	}
+	cout<<endl;
+}
 bool hangman::hasWon(){
 	for(int i = 0; i < wordlength; i++){
 		if(correctletters[i] == 0)
@@ -46,6 +69,7 @@ void hangman::guess(string x){
 			if(word[i] == x[0])
 			{
 				if(correctletters[i] == 1){
+					chances--;
 					cout<<"You had already guessed this letter."<<endl<<"Chances: "<<chances<<endl;
 					improvement = -1;
 					break;
@@ -53,7 +77,7 @@ void hangman::guess(string x){
 				else{
 					correctletters[i] = 1;
 					improvement = 1;
-					while(i<wordlength){
+					while(i < wordlength){
 						i++;
 						if(word[i] == x[0])
 						{
@@ -66,7 +90,7 @@ void hangman::guess(string x){
 		}
 		if(improvement == 0){
 			chances--;
-			cout<<"Oops, you guessed the wrong letter"<<endl<<"Chances: "<<chances;
+			cout<<"Oops, you guessed the wrong letter"<<endl<<"Chances: "<<chances<<endl;
 		}
 	}
 	else {
@@ -104,6 +128,7 @@ void hangman::startGame(){
 			cout<<"You lost the game as 0 chances left."<<endl;
 			return;
 		}
+		printState();
 		cout<<"Enter your guess: "<<endl;
 		string guess_argument;
 		cin>>guess_argument;
