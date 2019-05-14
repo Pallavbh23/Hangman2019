@@ -1,11 +1,16 @@
 //Hangman code
-/*
-* I need to fix this code. getHint() needs to support multiword/ multiline comments.
-* printHint() would work well if hintstate is good. 
-* Make it bugless before 15th.
+/* TODO list:
+* Make hint work.
+* Find a way to clear screen after the input is taken so that it is hidden from the other user or make input invisible while
+* taking it.
+* Make a single player mode and take string at random from a file of similar things.
+* Have multiple files like that and pick one file at random.
+* Don't need to implement hint for them but we can if we want slowly. 
+* Make the whole implementation bugless before 15th.
 */
 #include <iostream>
 #include <conio.h>
+#include<stdio.h>
 using namespace std;
 class hangman{
 	public:
