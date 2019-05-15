@@ -3,7 +3,8 @@
 * Make a single player mode and take string at random from a file of similar things.
 * Have multiple files like that and pick one file at random.
 * Don't need to implement hint for them but we can if we want slowly. 
-* Make the whole implementation bugless before 15th.
+* Implement Score and Leaderboard for both Single Player and Multiplayer.
+* Implement Single Player mode and Difficulties and File Selection.
 */
 #include <iostream>
 #include <conio.h>
@@ -12,13 +13,13 @@ using namespace std;
 class hangman{
 	public:
 	void startGame();
-	hangman(string _word){
+	hangman(string _word, string _hint = "\0"){
 		word = _word;
 		wordlength = _word.length();
 		correctletters = makeArray(wordlength);
 		chances = 10;
 		hintstate = 0;
-		hint = "\0";
+		hint = _hint;
 		cout<<"Do you want to add a hint? (Type 'y' for yes.)"<<endl;
 		char confirmation;
 		cin>>confirmation;
