@@ -1,6 +1,5 @@
 //Hangman code
 /* TODO list:
-* Make hint work.
 * Make a single player mode and take string at random from a file of similar things.
 * Have multiple files like that and pick one file at random.
 * Don't need to implement hint for them but we can if we want slowly. 
@@ -20,12 +19,12 @@ class hangman{
 		chances = 10;
 		hintstate = 0;
 		hint = "\0";
-		/*cout<<"Do you want to add a hint? (Type 'y' for yes.)"<<endl;
+		cout<<"Do you want to add a hint? (Type 'y' for yes.)"<<endl;
 		char confirmation;
 		cin>>confirmation;
 		cout<<endl;
 		if(confirmation == 'y')
-			getHint();*/ //hint functionality does not work yet.
+			getHint();
 	}
 	private:
 	string word;
@@ -117,7 +116,13 @@ void hangman::getHint(){
 
 	cout<<"Please enter your hint:"<<endl;
 	hintstate = 1;
-	cin>>hint; //need to make multi word supported hint.
+	while(1) {
+		char x;
+		x = getch();
+		if(x == '\r')
+		break;
+		hint+=x;
+	}
 }
 void hangman::printHint(){
 	if(hintstate == 1)
@@ -126,6 +131,7 @@ void hangman::printHint(){
 		cout<<"There's no hint."<<endl;
 }
 void hangman::startGame(){
+	int shownstate = 0;
 	while(!hasWon()){
 		if(chances == 0)
 		{
@@ -137,8 +143,9 @@ void hangman::startGame(){
 		string guess_argument;
 		cin>>guess_argument;
 		guess(guess_argument);
-		/*if(chances == 5)
+		if(chances == 5 && shownstate == 0)
 		{
+			shownstate = 1;
 			cout<<"Would you like to opt for the hint your opponent might have left? (Type 'y' for yes.)"<<endl;
 			char x;
 			cin>>x;
@@ -146,7 +153,7 @@ void hangman::startGame(){
 			{
 				printHint();
 			}
-		}*/ //hint functionality does not work.
+		}
 	}
 	cout<<"You won the game! The correct word was: "<<word<<endl;
 	return;
@@ -170,3 +177,4 @@ int main(){
 	_getch();
 	return 0;
 }
+
