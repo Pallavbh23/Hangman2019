@@ -157,8 +157,15 @@ void hangman::startGame(){
 int main(){
 	cout<<"Welcome to the Hangman game."<<endl;
 	cout<<"Enter the word you would like your opponent to guess:"<<endl;
-	string word;
-	cin>>word;
+	string word = "";
+	while(1) {
+		char x;
+		x = getch();
+		if(x == '\r')
+		break;
+		word+=x;
+	}
+	cout << "Great!, Let's start!" << endl;
 	hangman game(word);
 	game.startGame();
 	cout<<"press any key to exit.";
