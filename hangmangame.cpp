@@ -100,6 +100,7 @@ void hangman::guess(string x){
 		if(word == x)
 			victory();
 		else{
+			chances--;
 			cout<<"Wrong!"<<endl<<"Chances: "<<chances<<endl;
 		}
 	}
