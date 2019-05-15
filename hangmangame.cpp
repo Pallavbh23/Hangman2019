@@ -1,8 +1,6 @@
 //Hangman code
 /* TODO list:
 * Make hint work.
-* Find a way to clear screen after the input is taken so that it is hidden from the other user or make input invisible while
-* taking it.
 * Make a single player mode and take string at random from a file of similar things.
 * Have multiple files like that and pick one file at random.
 * Don't need to implement hint for them but we can if we want slowly. 
