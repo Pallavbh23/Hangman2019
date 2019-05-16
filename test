@@ -363,14 +363,14 @@ void user::createuser()
 		}
 	}while(flag ==1);
 }
-int login(int i,string login)//i = 1 for admin 0 for normal user
+int login(int i,string strlogin)//i = 1 for admin 0 for normal user
 {
 	string pass;
 	cout<<"\nPassword";
 	cin>>pass;	
 	if(i==1)
 	{
-		if(login == "hangman" && pass == "nhibataunga")
+		if(strlogin == "hangman" && pass == "nhibataunga")
 		{
 			return 1;
 		}
@@ -384,7 +384,7 @@ int login(int i,string login)//i = 1 for admin 0 for normal user
 		user u;
 		while(f.read((char *)&u,sizeof(u)))
 		{
-			if(u.retlogin() == login)
+			if(u.retlogin() == strlogin)
 			{
 				flag = 1;
 				if(u.retpass() == pass)
@@ -406,10 +406,10 @@ void singleplayer()
 {
 	word w;
 	int n;
-	string login;
+	string strlogin ;
 	cout<<"\nEnter login id";
-	cin>>login;
-	int flag = login(0,login);
+	cin>>strlogin;
+	int flag = login(0,strlogin);
 	if(flag == 0)
 	{
 		cout<<"Welcome to the Hangman game."<<endl;
