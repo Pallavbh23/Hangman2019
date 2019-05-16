@@ -1,0 +1,38 @@
+#include<iostream>
+#include<fstream>
+#include<string.h>
+using namespace std;
+struct user
+{
+	string s;
+	char name[50];
+	char login[30];
+};
+void write( user u)
+{
+	ofstream fout("gaming11.dat",ios::binary|ios::app);
+	fout.write( (char*)&u , sizeof(u) );
+	fout.close();
+}
+void read()
+{
+	ifstream fin("gaming11.dat",ios::binary);
+	user u;
+	while( fin.read( (char*)&u , sizeof(u) ) )
+	{
+		cout<<u.login;
+		cout<<u.name;
+		cout<<u.s;
+	}
+	fin.close();
+}
+int main()
+{
+	user u;
+	cin>>u.s;
+	cin>>u.name;
+	cin>>u.login;
+	write(u);
+	read();
+	return 0;
+}
