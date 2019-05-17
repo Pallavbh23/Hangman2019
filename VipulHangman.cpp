@@ -14,6 +14,7 @@
 #include <conio.h>
 #include<stdio.h>
 #include<fstream>
+#include<string.h>
 using namespace std;
 class hangman{
 	public:
@@ -186,135 +187,143 @@ struct word
 {
 	string genre;
 	string word;
-	string hint;	
-	static int count;
-	
+	string hint;		
 };
-int word ::count = 0;
 void addword()
 {
 	word w;
-	w.count++;
-	cout<<"\nEnter genre";
+	cout<<"\nEnter genre:";
 	cin>>w.genre;
-	cout<<"Enter Word";
+	cout<<"Enter Word:";
 	cin>>w.word;
-	cout<<"Enter hint";
+	cout<<"Enter hint:";
 	cin>>w.hint;
-	ofstream fout;
-	fout.open("hangman.dat",ios::binary | ios::app);
-	fout.write((char *)&w,sizeof(w));
+	ofstream fout("hang1.dat",ios::binary | ios::app);
+	fout.write(w.genre.c_str(),w.genre.size());
+	fout.write("\0" , sizeof(char));
+	fout.write(w.word.c_str(),w.word.size());
+	fout.write("\0" , sizeof(char));
+	fout.write(w.hint.c_str(),w.hint.size());
+	fout.write("\0" , sizeof(char));
 	fout.close();
 	string s;
+	s = w.genre;
 	int flag =0;
-	fstream f;
-	f.open("genre.dat" , ios::binary | ios::in | ios::out | ios::app);
-	while(f.read((char *)&s,sizeof(s)))
+	ifstream fin;
+	string genre = "";
+	fin.open("genre.dat" , ios::binary);
+	if(!fin.fail())
 	{
-		if(w.genre == s)
-			flag = 1;
+		while(!fin.eof())
+		{
+			getline(fin,genre,'\0');
+			if(genre == s)
+				flag = 1;
+		}
 	}
+	fin.close();
+	ofstream fout1("genre.dat" , ios::binary | ios::app);
 	if(flag == 0)
-		f.write((char *)&w.genre , sizeof(w));
+	{
+		fout1.write(s.c_str(),s.size());
+		fout1.write("\0" , sizeof(char));
+	}
+	fout1.close();
+}
+void showall()
+{
+	int i=1;
+	ifstream fin;
+	fin.open("hang1.dat",ios::binary);	
+	string genre = "";
+	string word = "";
+	string hint = "";
+	if(!fin.fail())
+	{
+		while(!fin.eof())
+		{
+			getline(fin,genre,'\0');
+			getline(fin,word,'\0');
+			getline(fin,hint,'\0');
+			if(!fin.eof())
+			{
+				cout<<endl<<i<<".\n";
+				cout<<"Genre:"<<genre;
+				cout<<"\nWord"<<word;
+				cout<<"\nHint"<<hint;
+			}
+			i++;
+		}
+	}
+	cout<<"\nCompleted";
+	fin.close();
 }
 void deleteword()
 {
-	word w;
 	string s;
 	cout<<"\nEnter the word you want to delete";
 	cin>>s;
 	ifstream fin;
-	fin.open("hangman.dat" , ios::binary);
+	fin.open("hang1.dat" , ios::binary);
 	ofstream fout;
 	fout.open("temp.dat" , ios::binary);
-	while(fin.read((char *)&w,sizeof(w)))
+	string genre = "";
+	string word = "";
+	string hint = "";
+	while(!fin.eof())
 	{
-		if(w.word == s)
+		getline(fin,genre,'\0');
+		getline(fin,word,'\0');
+		getline(fin,hint,'\0');
+		if(word != s)
+		{
+			fout.write(genre.c_str(),genre.size());
+			fout.write("\0" , sizeof(char));
+			fout.write(word.c_str(),word.size());
+			fout.write("\0" , sizeof(char));
+			fout.write(hint.c_str(),hint.size());
+			fout.write("\0" , sizeof(char));
 			continue;
-		fout.write((char *)&w,sizeof(w));
+		}
 	}
-	remove("hangman.dat");
-	rename("temp.dat" , "hangman.dat");
 	fin.close();
 	fout.close();
-}
-void showall()
-{
-	word w;
-	int i=1;
-	ifstream fin;
-	fin.open("hangman.dat",ios::binary);
-	while(fin.read((char *)&w,sizeof(w)))
-	{
-		cout<<endl<<i<<".\n";
-		cout<<"Genre:"<<w.genre;
-		cout<<"\nWord"<<w.word;
-		cout<<"\nHint"<<w.hint;
-		i++;
-	}
-	cout<<"\nCompleted";
-	fin.close();
+	remove("hang1.dat");
+	rename("temp.dat" , "hang1.dat");
+	
 }
 void genreshow()
 {
 	string s;
 	int i=1;
-	ifstream fin;
-	fin.open("hangman.dat",ios::binary);
-	while(fin.read((char *)&s,sizeof(s)))
+	ifstream fin("genre.dat",ios::binary);
+	while(!fin.eof())
 	{
-		cout<<i<<"."<<s;
-		cout<<endl;
-		i++;
+		getline(fin,s,'\0');
+		if(!fin.eof())
+		{
+			cout<<i<<"."<<s;
+			cout<<endl;
+			i++;
+		}
 	}
 	cout<<"\nCompleted";
 	fin.close();
 }
-void admin()
-{
-	int choice;
-	do
-	{
-		cout<<"\nEnter your choice";
-		cout<<"\n1.Show LeaderBoard";
-		cout<<"\n2.Add words in file";
-		cout<<"\n3.Delete word from file";
-		cout<<"\n4.Show Words of a specific genre";
-		cout<<"\n5.Show All words";
-		cout<<"\n6.Go back to main menu";
-		cin>>choice;
-		switch(choice)
-		{
-			case 1://leaderboard();
-				break;
-			case 2:addword();
-				break;
-			case 3:deleteword();
-				break;
-			case 4:genreshow();
-				break;
-			case 5:showall();
-				break;
-			case 6:	return;
-			default:
-				cout<<"Wrong key entered..please try again";
-		}
-	}while(1);
-}
 ////USER
 class user
 {
-	string name;
-	string login;
-	string pass;
+	char name[50];
+	char login[50];
+	char pass[50];
 	long long int phno;
 	int points;
 	public:
-	string retpass()
+	char* retpass()
 	{
 		return pass;
 	}
-	string retlogin()
+	char* retlogin()
 	{
 		return login;
 	}
@@ -324,70 +333,33 @@ class user
 	}
 	void createuser();
 };
-void user::createuser()
+int login(int i,string strlogin)//i = 1 for admin 0 for normal user
 {
-	fstream f;
-	f.open("login.dat",ios::binary | ios::in | ios::out | ios::app);
-	user u;
-	int flag = 0;
-	cout<<"\nEnter Name";
-	cin>>name;
-	cout<<"\nEnter phone number";
-	cin>>phno;
-	do
-	{
-		flag = 0;
-		cout<<"\nEnter login id";
-		cin>>login;
-		while(f.read((char *)&u,sizeof(u)))
-		{
-			if(u.retlogin() == this->login)
-				flag = 1;
-		}
-		if(flag == 1)
-			cout<<"\nSorry login id already exist please choose a new one";
-	}while(flag == 1);
-	flag = 0;
-	string pass2;
-	do
-	{
-		flag = 0;
-		cout<<"\nEnter Password";
-		cin>>pass;
-		cout<<"\nReenter password";
-		cin>>pass2;
-		if(pass != pass2)
-		{
-			cout<<"\nSorry! password didnot match. Please reenter password";
-			flag = 1;
-		}
-	}while(flag ==1);
-}
-int login(int i,string login)//i = 1 for admin 0 for normal user
-{
-	string pass;
+	char pass[50];
 	cout<<"\nPassword";
 	cin>>pass;	
 	if(i==1)
 	{
-		if(login == "hangman" && pass == "nhibataunga")
+		if(strlogin == "hangman" && !strcmp(pass,"nhibataunga"))
 		{
-			return 1;
+			return 0;
 		}
-		return 0;
+		return 1;
 	}
 	if(i==0)
 	{
+		char log[50];
+		strcpy(log,strlogin.c_str());
 		int flag = 0;
 		fstream f;
 		f.open("login.dat",ios::binary | ios::in | ios::out | ios::app);
 		user u;
 		while(f.read((char *)&u,sizeof(u)))
 		{
-			if(u.retlogin() == login)
+			if(!strcmp(u.retlogin(),log))
 			{
 				flag = 1;
-				if(u.retpass() == pass)
+				if(!strcmp(u.retpass() , pass))
 				{
 					return 1;
 				}
@@ -402,29 +374,149 @@ int login(int i,string login)//i = 1 for admin 0 for normal user
 		return 0;
 	}
 }
+void admin()
+{
+	string strlogin ;
+	cout<<"\nEnter login id";
+	cin>>strlogin;
+	int flag = login(1,strlogin);
+	if(flag == 0)
+	{
+		int choice;
+		do
+		{
+			cout<<"\nEnter your choice";
+			cout<<"\n1.Show LeaderBoard";
+			cout<<"\n2.Add words in file";
+			cout<<"\n3.Delete word from file";
+			cout<<"\n4.Show all genre";
+			cout<<"\n5.Show All words";
+			cout<<"\n6.Go back to main menu";
+			cin>>choice;
+			switch(choice)
+			{
+				case 1://leaderboard();
+					break;
+				case 2:addword();
+					break;
+				case 3:deleteword();
+					break;
+				case 4:genreshow();
+					break;
+				case 5:showall();
+					break;
+				case 6:	return;
+				default:
+					cout<<"Wrong key entered..please try again";
+			}
+		}while(1);
+	}
+	else
+	{
+		if(flag == 1)
+			cout<<"\nInvalid id Entered";
+		if(flag == 2)
+			cout<<"\nInvalid Password entered";
+		admin();
+	}
+}
+void user::createuser()
+{
+	fstream f;
+	f.open("login.dat",ios::binary | ios::in | ios::out | ios::app);
+	user u;
+	int flag = 0;
+	cout<<"\nEnter Name";
+	cin>>u.name;
+	cout<<"\nEnter phone number";
+	cin>>u.phno;
+	do
+	{
+		flag = 0;
+		cout<<"\nEnter login id";
+		cin>>u.login;
+		while(f.read((char *)&u,sizeof(u)))
+		{
+			if(!strcmp(u.retlogin() , this->login))
+				flag = 1;
+		}
+		if(flag == 1)
+			cout<<"\nSorry login id already exist please choose a new one";
+	}while(flag == 1);
+	flag = 0;
+	char pass2[50];
+	do
+	{
+		flag = 0;
+		cout<<"\nEnter Password:  ";
+		cin>>u.pass;
+		cout<<"\nReenter password:";
+		cin>>pass2;
+		if(strcmp(u.retpass(),pass2))
+		{
+			cout<<"\nSorry! password didnot match. Please reenter password";
+			flag = 1;
+		}
+	}while(flag ==1);
+	f.write((char *)&u,sizeof(u));
+	f.close();
+}
 void singleplayer()
 {
 	word w;
 	int n;
-	string login;
+	char ch;
+	user u;
+	cout<<"Does User exist?(y/n)";
+	cin>>ch;
+	if(ch == 'n')
+		u.createuser();
+	string strlogin ;
+	cout<<"Enter credentials to login:";
 	cout<<"\nEnter login id";
-	cin>>login;
-	int flag = login(0,login);
+	cin>>strlogin;
+	int flag = login(0,strlogin);
 	if(flag == 0)
 	{
 		cout<<"Welcome to the Hangman game."<<endl;
 		cout<<"Enter the word you would like your opponent to guess:"<<endl;
 		string word = "";
-		n = rand() % w.count;
+		int i=1;
 		ifstream fin;
-		fin.open("hangman.dat",ios::binary);
-		while(n--)
+		fin.open("hang1.dat",ios::binary);	
+		string genre = "";
+		string _word = "";
+		string hint = "";
+		if(!fin.fail())
 		{
-			fin.read((char *)&w , sizeof(w));
+			while(!fin.eof())
+			{
+				getline(fin,genre,'\0');
+				getline(fin,_word,'\0');
+				getline(fin,hint,'\0');
+				if(!fin.eof())
+				{
+					i++;
+				}
+			}
 		}
-		word = w.word;
+		cout<<"\nCompleted";
+		fin.close();
+		n = rand() % i;
+		ifstream fin1;
+		fin1.open("hang1.dat",ios::binary);	
+		if(!fin.fail())
+		{
+			while(--i)
+			{
+				getline(fin1,genre,'\0');
+				getline(fin1,_word,'\0');
+				getline(fin1,hint,'\0');
+			}
+		}
+		fin1.close();
 		cout << "Great!, Let's start!" << endl;
-		hangman game(word);
+		hangman game(_word);
 		game.startGame();
 	}
 	else
@@ -442,13 +534,13 @@ void guest()
 	cout<<"Welcome to the Hangman game."<<endl;
 	cout<<"Enter the word you would like your opponent to guess:"<<endl;
 	string _word = "";
-	int n = rand() % w.count;
+	//int n = rand() % w.count;
 	ifstream fin;
 	fin.open("hangman.dat",ios::binary);
-	while(n--)
-	{
-		fin.read((char *)&w , sizeof(w));
-	}
+	//while(n--)
+	//{
+//		fin.read((char *)&w , sizeof(w));
+	//}
 	_word = w.word;
 	cout << "Great!, Let's start!" << endl;
 	hangman game(_word);
