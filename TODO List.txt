@@ -1,0 +1,22 @@
+Conventions:
+()  - undone
+(o) - on it
+(d) - done
+
+Things to be done:
+
+*Score print () - Tentative
+*Leaderboard (o) - Vipul
+*Filehandling code to add different genres and words() - Vipul
+*Difficulty modes (o) - Ayush and Pallav
+*Single player mode finalized () - Pallav
+*Tweaking different functions and parts of code to ensure seamless integration() - Pallav
+*Taking all the redundant or experimental code and put it in another file (o) - Pallav
+*Reading all the code and getting everything in it () - Everyone
+
+
+
+Major Rep Credits:
+Vips - File Handling
+Ayush - Hint System
+Pallav - Meh
