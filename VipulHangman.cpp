@@ -3,7 +3,7 @@
 * Make a single player mode and take string at random from a file of similar things.
 * Have multiple files like that and pick one file at random.
 * Don't need to implement hint for them but we can if we want slowly. 
-* Make the whole implementation bugless before 15th.
+* Make the whole implementation bugless before 15th..
 *credentials for admin login are:
 *login id:hangman
 *password:nhibataunga
