@@ -58,3 +58,22 @@ hint prompt at every wrong guess:
 					getHint();
 				}
 			}
+Redundant main():
+int main(){
+	cout<<"Welcome to the Hangman game."<<endl;
+	cout<<"Enter the word you would like your opponent to guess:"<<endl << endl;
+	string word = "";
+	while(1) {
+		char x;
+		x = getch();
+		if(x == '\r')
+		break;
+		word+=x;
+	}
+	cout << "Great!, Let's start!" << endl;
+	hangman game(word);
+	game.startGame();
+	cout<<"press any key to exit.";
+	_getch();
+	return 0;
+}
