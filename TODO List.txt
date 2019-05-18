@@ -4,7 +4,7 @@ Conventions:
 (d) - done
 
 Things to be done:
-
+*Fix case sensitivity in the input () - Ayush
 *Score print () - Tentative
 *Leaderboard (o) - Vipul
 *Filehandling code to add different genres and words() - Vipul
