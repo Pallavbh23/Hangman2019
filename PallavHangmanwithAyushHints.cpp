@@ -29,7 +29,6 @@ class hangman{
 		correctletters = makeArray(wordlength);
 		chances = 10;
 		hints = 3;
-		//hintstate = 0 for hint v1
 		for(int i = 0; i < 7; i++) {
 			mymap[97 + 4*i] = 0;
 		}
@@ -44,10 +43,8 @@ class hangman{
 	int hints;
 	int level;
 	unordered_map <int, int> mymap;
-	void getHint();
-	//int hintstate;
-	//void printhint(); for hint v1
 	bool hasWon();
+	void getHint();
 	bool* makeArray(int length);
 	void guess(string x);
 	void victory();
@@ -154,17 +151,6 @@ void hangman::victory(){
 }
 
 void hangman::getHint(){
-	/*
-	cout<<"Please enter your hint:"<<endl;
-	hintstate = 1;
-	while(1) {
-		char x;
-		x = getch();
-		if(x == '\r')
-		break;
-		hint+=x;
-	}*/ //for hint v1
-	
 	if(hints <= 0) {
 		cout << "Sorry, you do not have any hints left!" << endl;
 		return;
@@ -259,18 +245,6 @@ void hangman::startGame(){
 				}
 			}
 		}
-		/*if(chances == 5 && shownstate == 0)
-		{
-			shownstate = 1;
-			cout<<"Would you like to opt for the hint your opponent might have left? (Type 'y' for yes.)"<<endl;
-			char x;
-			cin>>x;
-			if(x == 'y')
-			{
-				printHint();
-			}
-		}
-		}*/ //hint v1
 	}
 	cout<<"You won the game! The correct word was: "<<word<<endl;
 	return;
