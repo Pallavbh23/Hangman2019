@@ -10,8 +10,8 @@ Things to be done:
 *Filehandling code to add different genres and words() - Vipul
 *Difficulty modes (o) - Ayush and Pallav
 *Single player mode finalized () - Pallav
-*Tweaking different functions and parts of code to ensure seamless integration() - Pallav
-*Taking all the redundant or experimental code and put it in another file (o) - Pallav
+*Tweaking different functions and parts of code to ensure seamless integration(d) - Pallav
+*Taking all the redundant or experimental code and put it in another file (d) - Pallav
 *Ensure no problems when there are spaces in word() - Ayush
 *Rectify when user misspelled a word and need to do backspace() - ayush
 *multiple inputs/guess from user()
