@@ -4,9 +4,12 @@ Conventions:
 (d) - done
 
 Things to be done:
-*Fix case sensitivity in the input () - Ayush
+*Fix case sensitivity in the input (0) - Ayush
+*Hint hotkey (o) - Ayush
+*Space fix (o) - Ayush
 *Score print () - Tentative
 *Leaderboard (o) - Vipul
+*backspace (o) - Pallav
 *Filehandling code to add different genres and words() - Vipul
 *Difficulty modes (o) - Ayush and Pallav
 *Single player mode finalized () - Pallav
