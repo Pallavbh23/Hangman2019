@@ -3,6 +3,8 @@
 *login id:hangman
 *password:nhibataunga
 */
+#include <ios>
+#include <limits>
 #include<stdlib.h>
 #include<process.h>
 #include <iostream>
@@ -18,6 +20,7 @@ class node{
 		string data;
 		node* next;
 };
+
 class hangman{
 	public:
 	void startGame();
@@ -53,6 +56,18 @@ class hangman{
 	void printState();
 };
 
+string allSmall(string input) {
+	string output = "";
+	for(int i = 0; i < input.length(); i++) {
+		if(input[i] < 97 && input[i] != 32) {
+			output += input[i] + 32;
+		} else {
+			output += input[i];
+		}
+	}
+	return output;
+}
+
 void hangman::printUsedWords(node* used){
 	cout<<"\nYou have already tried:"<<endl;
 	while(used != NULL)
@@ -62,6 +77,7 @@ void hangman::printUsedWords(node* used){
 	}
 	cout<<endl<<endl;
 }
+
 bool* hangman::makeArray(int length){
 	bool* arr = new bool[length];
 	for(int i = 0; i < length; i++)
@@ -73,8 +89,13 @@ void hangman::printState(){
 	cout<<"Current state of your characters is: "<<endl;
 	for(int i = 0; i < wordlength; i++)
 	{
-		if(correctletters[i] == 1)
+		if(correctletters[i] == 1 && word[i] != 32)
 			cout<<word[i];
+		else if(word[i] == 32) {
+			cout << word[i] << word[i];
+			correctletters[i] = 1;
+		}
+			
 		else
 			cout<<" _ ";
 	}
@@ -96,8 +117,7 @@ void hangman::guess(string x){
 			if(word[i] == x[0])
 			{
 				if(correctletters[i] == 1){
-					chances--;
-					cout<<endl<<"You had already guessed this letter."<<endl<<"Chances: "<<chances<<endl<<endl;
+					cout<<endl<<"You had already guessed this letter."<<endl;//<<"Chances: "<<chances<<endl<<endl;
 					improvement = -1;
 					break;
 				}
@@ -156,7 +176,7 @@ void hangman::getHint(){
 			if(word[i] == 'a' || word[i] == 'e' || word[i] == 'i' || word[i] == 'o' || word[i] == 'u')	
 				count++;				
 		}
-		cout << "There are " << count << " vowels left in the remaining word." << endl;
+		cout << endl << "HINT:   There are " << count << " vowels left in the remaining word." << endl << endl;
 	} else if(c == 'r') {
 		unordered_map<char, int> map;
 		for(int i = 0; i < wordlength; i++) {
@@ -174,7 +194,7 @@ void hangman::getHint(){
 			}
 			
 		}
-		cout << "There are " << count << " set repeated letters in the remaining word" << endl;
+		cout << endl <<"HINT:  There are " << count << " set repeated letters in the remaining word" << endl << endl;
 	} else {
 		for(int i = 0; i < wordlength; i++) {
 			if(correctletters[i] == 1)
@@ -192,7 +212,7 @@ void hangman::getHint(){
 				maxIndex = 97 + 4*j;
 			}
 		}
-		cout << "In the remaining word, there are " << mymap[maxIndex] << " letters between " << char(maxIndex) << " and " << char(maxIndex + 3) << " (both included)." << endl;	
+		cout << endl << "HINT:  In the remaining word, there are " << mymap[maxIndex] << " letters between " << char(maxIndex) << " and " << char(maxIndex + 3) << " (both included)." << endl << endl;	
 		for(int i = 0; i < 7; i++) {
 			mymap[97 + 4*i] = 0;
 		}
@@ -202,7 +222,7 @@ void hangman::getHint(){
 }
 
 void hangman::startGame(){
-	int shownstate = 0;
+	bool shownstate = 0;
 	while(!hasWon()){
 		if(chances == 0)
 		{
@@ -211,34 +231,45 @@ void hangman::startGame(){
 		}
 		printState();
 		printUsedWords(usedwords);
+		if(chances == 5 && shownstate == 0){
+			shownstate = 1;
+			cout << "You are now eligible for hints! Enter #h during any chance to get one." << endl;
+			cout << "You have " << hints << " hints left." << endl;
+		}
 		cout<<"Enter your guess: "<<endl;
+		
 		string guess_argument;
-		cin>>guess_argument;
+		getline(cin, guess_argument);
+		if(chances <= 5) {
+			if(guess_argument == "#h") {
+			while(guess_argument == "#h") {
+				if(hints == 0) {
+					cout << "Sorry, you have no hints left!" << endl;
+				} else {
+					getHint();
+					cout << "You have " << hints << " hints left." << endl;
+				}
+				cout<<"Enter your guess: "<<endl;
+				string new_argument;
+				cin >> new_argument;
+				guess_argument = new_argument;
+			}
+		}
+		}
+		
 		cursor->data = guess_argument;
 		cursor->next = new node();
 		cursor = cursor->next;
-		cursor->next = NULL;
+		cursor->next = NULL;		
+		
 		guess(guess_argument);
-		if(chances == 5 && shownstate == 0){
-			shownstate = 1;
-			if(hints != 0) {
-				cout << "Would you like a hint? (y/n)" << endl;
-				char c;
-				cin >> c;
-				if(c == 'n') {
-					return;
-				} 
-				else {
-				
-					getHint();
-				}
-			}
-		}
 	}
+	
 	cout<<"You won the game! The correct word was: "<<word<<endl;
 	return;
 	
 }
+
 void initialize_game()
 {
 	cout<<"Welcome to the Hangman game."<<endl;
@@ -247,10 +278,17 @@ void initialize_game()
 	while(1) {
 		char x;
 		x = getch();
+		if(x == '\b') {
+			word = word.substr(0, word.length() - 1);
+			continue;
+		}
 		if(x == '\r')
 		break;
 		word+=x;
 	}
+	cin.ignore(numeric_limits<streamsize>::max(),'\n'); 
+		// To fush the present input which is the enter key character
+	word = allSmall(word);
 	cout << "Great!, Let's start!" << endl;
 	hangman game(word);
 	game.startGame();
@@ -303,6 +341,7 @@ void addword()
 	}
 	fout1.close();
 }
+
 void showall()
 {
 	int i=1;
