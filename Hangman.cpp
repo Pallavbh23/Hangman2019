@@ -12,6 +12,7 @@
 #include<stdio.h>
 #include<fstream>
 #include<string.h>
+#include <cctype>
 #include <unordered_map>
 using namespace std;
 
@@ -55,8 +56,7 @@ class hangman{
 	void printUsedWords(node* used);
 	void printState();
 };
-
-string allSmall(string input) {
+/*string allSmall(string input) {
 	string output = "";
 	for(int i = 0; i < input.length(); i++) {
 		if(input[i] < 97 && input[i] != 32) {
@@ -66,11 +66,11 @@ string allSmall(string input) {
 		}
 	}
 	return output;
-}
+}*/ //Had to remove this function cause it was leading to a lot of bugs.
 
 void hangman::printUsedWords(node* used){
 	cout<<"\nYou have already tried:"<<endl;
-	while(used != NULL)
+	while(used != NULL) //Traverses the linkedlist and prints all the nodes that are present
 	{
 		cout<<used->data<<' ';
 		used = used->next;
@@ -78,7 +78,7 @@ void hangman::printUsedWords(node* used){
 	cout<<endl<<endl;
 }
 
-bool* hangman::makeArray(int length){
+bool* hangman::makeArray(int length){ //Helper function 
 	bool* arr = new bool[length];
 	for(int i = 0; i < length; i++)
 		arr[i] = 0;
@@ -114,7 +114,7 @@ void hangman::guess(string x){
 	if(x.length() == 1){
 		bool improvement = 0;
 		for(int i = 0; i < wordlength; i++){
-			if(word[i] == x[0])
+			if(tolower(word[i]) == tolower(x[0]))
 			{
 				if(correctletters[i] == 1){
 					cout<<endl<<"You had already guessed this letter."<<endl;//<<"Chances: "<<chances<<endl<<endl;
@@ -222,56 +222,49 @@ void hangman::getHint(){
 }
 
 void hangman::startGame(){
-	bool shownstate = 0;
+	bool shownstate = 0; //Hint usage block has not been shown yet.
+
 	while(!hasWon()){
 		if(chances == 0)
 		{
-			cout<<"You lost the game as 0 chances left."<<endl << "The correct word was " << word << endl;
+			cout<<"You lost the game as 0 chances left."<<endl << "The correct answer was \"" << word <<"\""<< endl;
 			return;
 		}
-		printState();
-		printUsedWords(usedwords);
+		printState(); //Prints the current state of the word depecting the letters that have been guessed and the letters that haven't.
+		printUsedWords(usedwords); //Prints the letters/words that the user has already tried.
 		if(chances == 5 && shownstate == 0){
-			shownstate = 1;
+			shownstate = 1; //Shownstate = 1 ensures that this block is executed only once.
 			cout << "You are now eligible for hints! Enter #h during any chance to get one." << endl;
 			cout << "You have " << hints << " hints left." << endl;
 		}
 		cout<<"Enter your guess: "<<endl;
-		
-		string guess_argument;
-		getline(cin, guess_argument);
-		if(chances <= 5) {
-			if(guess_argument == "#h") {
-			while(guess_argument == "#h") {
-				if(hints == 0) {
+		string guess_argument; 
+		getline(cin, guess_argument); //Takes the guess from user (word/letter).
+		if(chances <= 5) { //Only executes when chances are less than 5.
+			if(guess_argument == "#h") { // Checks if the guess_argument is #h.
+				if(hints == 0) { //Exhausted all hints.
 					cout << "Sorry, you have no hints left!" << endl;
-				} else {
-					getHint();
+				} 
+				else {
+					getHint(); //Function to get hint is called.
 					cout << "You have " << hints << " hints left." << endl;
 				}
-				cout<<"Enter your guess: "<<endl;
-				string new_argument;
-				cin >> new_argument;
-				guess_argument = new_argument;
 			}
 		}
-		}
-		
+
 		cursor->data = guess_argument;
 		cursor->next = new node();
 		cursor = cursor->next;
 		cursor->next = NULL;		
-		
-		guess(guess_argument);
+
+		guess(guess_argument); // Function to check if the argument is correct and updating it in the context of the game.
 	}
 	
 	cout<<"You won the game! The correct word was: "<<word<<endl;
 	return;
-	
 }
 
-void initialize_game()
-{
+void initialize_game(){
 	cout<<"Welcome to the Hangman game."<<endl;
 	cout<<"Enter the word you would like your opponent to guess:"<<endl;
 	string word = "";
@@ -287,21 +280,18 @@ void initialize_game()
 		word+=x;
 	}
 	cin.ignore(numeric_limits<streamsize>::max(),'\n'); 
-		// To fush the present input which is the enter key character
-	word = allSmall(word);
+		//word = allSmall(word); // This is so wrong.
 	cout << "Great!, Let's start!" << endl;
 	hangman game(word);
 	game.startGame();
 }
 ///FILE WORK
-struct word
-{
+struct word{
 	string genre;
 	string word;
 	string hint;		
 };
-void addword()
-{
+void addword(){
 	word w;
 	cout<<"\nEnter genre:";
 	cin>>w.genre;
@@ -342,8 +332,7 @@ void addword()
 	fout1.close();
 }
 
-void showall()
-{
+void showall(){
 	int i=1;
 	ifstream fin;
 	fin.open("hang1.dat",ios::binary);	
@@ -370,8 +359,7 @@ void showall()
 	cout<<"\nCompleted";
 	fin.close();
 }
-void deleteword()
-{
+void deleteword(){
 	string s;
 	cout<<"\nEnter the word you want to delete";
 	cin>>s;
@@ -404,8 +392,7 @@ void deleteword()
 	rename("temp.dat" , "hang1.dat");
 	
 }
-void genreshow()
-{
+void genreshow(){
 	string s;
 	int i=1;
 	ifstream fin("genre.dat",ios::binary);
@@ -423,8 +410,7 @@ void genreshow()
 	fin.close();
 }
 ////USER
-class user
-{
+class user{
 	char name[50];
 	char login[50];
 	char pass[50];
@@ -485,9 +471,9 @@ int login(int i,string strlogin)//i = 1 for admin 0 for normal user
 			cout<<"\nInvalid password";
 		return 0;
 	}
+	return -1;
 }
-void admin()
-{
+void admin(){
 	string strlogin ;
 	cout<<"\nEnter login id";
 	cin>>strlogin;
@@ -532,8 +518,7 @@ void admin()
 		admin();
 	}
 }
-void user::createuser()
-{
+void user::createuser(){
 	fstream f;
 	f.open("login.dat",ios::binary | ios::in | ios::out | ios::app);
 	user u;
@@ -573,8 +558,7 @@ void user::createuser()
 	f.write((char *)&u,sizeof(u));
 	f.close();
 }
-void singleplayer()
-{
+void singleplayer(){
 	word w;
 	int n;
 	char ch;
@@ -640,8 +624,7 @@ void singleplayer()
 		singleplayer();
 	}
 }
-void guest()
-{
+void guest(){
 	word w;
 	cout<<"Welcome to the Hangman game."<<endl;
 	cout<<"Enter the word you would like your opponent to guess:"<<endl;
@@ -649,17 +632,16 @@ void guest()
 	//int n = rand() % w.count;
 	ifstream fin;
 	fin.open("hangman.dat",ios::binary);
-	//while(n--)
-	//{
-//		fin.read((char *)&w , sizeof(w));
-	//}
+	/*while(n--)
+	{		
+		fin.read((char *)&w , sizeof(w));
+	}*/
 	_word = w.word;
 	cout << "Great!, Let's start!" << endl;
 	hangman game(_word);
 	game.startGame();
 }
-int main()
-{
+int main(){
 	cout<<"\t\t\t\t\t\tWelcome, Player!";
 	int choice;
 	do
@@ -686,7 +668,8 @@ int main()
 			default:
 				cout<<"That's an incorrect choice! Please select a valid option:";
 		}
-	}while(1);
+	}
+	while(1);
+
 	return 0;
 }
-
